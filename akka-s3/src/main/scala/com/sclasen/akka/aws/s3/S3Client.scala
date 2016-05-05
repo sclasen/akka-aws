@@ -118,30 +118,30 @@ class S3Client(val props: S3ClientProps) extends AkkaAWSClient(props) {
   def errorResponseHandler = new S3ErrorResponseHandler
 
   def listBuckets(aws: ListBucketsRequest): Future[Either[AmazonServiceException, Seq[Bucket]]] = {
-    pipeline(request(aws)).map(response[JList[Bucket]]).map(_.right.map(_.asScala.toSeq))
+    pipeline(request(aws)).flatMap(response[JList[Bucket]]).map(_.right.map(_.asScala.toSeq))
   }
 
   def createBucket(aws: CreateBucketRequest): Future[Either[AmazonServiceException, Unit]] = {
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
   }
 
   def deleteBucket(aws: DeleteBucketRequest): Future[Either[AmazonServiceException, Unit]] = {
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
   }
 
   def putObject(aws: PutObjectRequest): Future[Either[AmazonServiceException, ObjectMetadata]] = {
-    pipeline(request(aws)).map(response[ObjectMetadata])
+    pipeline(request(aws)).flatMap(response[ObjectMetadata])
   }
 
   def getObject(aws: GetObjectRequest): Future[Either[AmazonServiceException, S3Object]] = {
-    pipeline(request(aws)).map(response[S3Object])
+    pipeline(request(aws)).flatMap(response[S3Object])
   }
 
   def deleteObject(aws: DeleteObjectRequest): Future[Either[AmazonServiceException, Unit]] = {
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
   }
 
   def listObjects(aws: ListObjectsRequest): Future[Either[AmazonServiceException, ObjectListing]] = {
-    pipeline(request(aws)).map(response[ObjectListing])
+    pipeline(request(aws)).flatMap(response[ObjectListing])
   }
 }

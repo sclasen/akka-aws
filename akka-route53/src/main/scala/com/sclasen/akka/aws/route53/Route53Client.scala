@@ -152,7 +152,7 @@ class Route53Client(val props: Route53ClientProps) extends AkkaAWSClient(props) 
 
   def handle[I, O](req: I)(implicit marshaller: Marshaller[Request[I], I], handler: HttpResponseHandler[AmazonWebServiceResponse[O]]): Future[Either[AmazonServiceException, O]] = {
     val awsReq = marshaller.marshall(req)
-    pipeline(request(req)).map(response[O]).map {
+    pipeline(request(req)).flatMap(response[O]).map {
       _.right.map { res =>
         idHandler.afterResponse(awsReq, res, TimingInfo.startTiming())
         res

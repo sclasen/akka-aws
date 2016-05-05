@@ -136,33 +136,34 @@ abstract class AkkaAWSClient(props: AkkaAWSClientProps) {
     request
   }
 
+  type Response[T] = Future[Either[AmazonServiceException, T]]
+
   def response[T](response: HttpResponse)(
     implicit handler: HttpResponseHandler[AmazonWebServiceResponse[T]],
              actorSystem: ActorSystem,
              materializer: ActorMaterializer
-  ): Either[AmazonServiceException, T] = {
+  ): Response[T] = {
     import scala.util.Try
+    import scala.concurrent.Promise
 
     val req = new DefaultRequest[T](props.service)
     val awsResp = new AWSHttpResponse(req, null)
-    val bs: Try[ByteString] = Try(Await.result(response.entity.toStrict(timeout.duration).map { _.data }, timeout.duration))
+    val futureBs: Future[ByteString] = response.entity.toStrict(timeout.duration).map { _.data }
 
-    if (bs.isFailure) {
-      return Left(new com.amazonaws.AmazonServiceException(s"Unable to get response for $response"))
-    }
-
-    awsResp.setContent(new ByteArrayInputStream(bs.get.toArray))
-    awsResp.setStatusCode(response.status.intValue)
-    awsResp.setStatusText(response.status.defaultMessage)
-    if (200 <= awsResp.getStatusCode && awsResp.getStatusCode < 300) {
-      val handle: AmazonWebServiceResponse[T] = handler.handle(awsResp)
-      val resp = handle.getResult
-      Right(resp)
-    } else {
-      response.headers.foreach {
-        h => awsResp.addHeader(h.name, h.value)
+    futureBs map { bs =>
+      awsResp.setContent(new ByteArrayInputStream(bs.toArray))
+      awsResp.setStatusCode(response.status.intValue)
+      awsResp.setStatusText(response.status.defaultMessage)
+      if (200 <= awsResp.getStatusCode && awsResp.getStatusCode < 300) {
+        val handle: AmazonWebServiceResponse[T] = handler.handle(awsResp)
+        val resp = handle.getResult
+        Right(resp)
+      } else {
+        response.headers.foreach {
+          h => awsResp.addHeader(h.name, h.value)
+        }
+        Left(errorResponseHandler.handle(awsResp))
       }
-      Left(errorResponseHandler.handle(awsResp))
     }
   }
 

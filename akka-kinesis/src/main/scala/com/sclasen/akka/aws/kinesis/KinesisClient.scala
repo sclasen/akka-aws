@@ -91,7 +91,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Returns 200 with an empty body on success.
    */
   def createStream(aws: CreateStreamRequest): Future[Either[AmazonServiceException, Unit]] =
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
 
   def sendCreateStream(aws: CreateStreamRequest): Future[Unit] = fold(createStream(aws))
 
@@ -101,7 +101,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Returns 200 with an empty body on success.
    */
   def deleteStream(aws: DeleteStreamRequest): Future[Either[AmazonServiceException, Unit]] =
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
 
   def sendDeleteStream(aws: DeleteStreamRequest): Future[Unit] = fold(deleteStream(aws))
 
@@ -109,7 +109,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Get metadata about a stream.
    */
   def describeStream(aws: DescribeStreamRequest): Future[Either[AmazonServiceException, DescribeStreamResult]] =
-    pipeline(request(aws)).map(response[DescribeStreamResult])
+    pipeline(request(aws)).flatMap(response[DescribeStreamResult])
 
   def sendDescribeStream(aws: DescribeStreamRequest): Future[DescribeStreamResult] = fold(describeStream(aws))
 
@@ -117,7 +117,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Get records from a specific shard.  Open the iterator first with getShardIterator.
    */
   def getRecords(aws: GetRecordsRequest): Future[Either[AmazonServiceException, GetRecordsResult]] =
-    pipeline(request(aws)).map(response[GetRecordsResult])
+    pipeline(request(aws)).flatMap(response[GetRecordsResult])
 
   def sendGetRecords(aws: GetRecordsRequest): Future[GetRecordsResult] = fold(getRecords(aws))
 
@@ -125,7 +125,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Opens an iterator onto a specific shard.
    */
   def getShardIterator(aws: GetShardIteratorRequest): Future[Either[AmazonServiceException, GetShardIteratorResult]] =
-    pipeline(request(aws)).map(response[GetShardIteratorResult])
+    pipeline(request(aws)).flatMap(response[GetShardIteratorResult])
 
   def sendGetShardIterator(aws: GetShardIteratorRequest): Future[GetShardIteratorResult] = fold(getShardIterator(aws))
 
@@ -133,7 +133,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Get list of all streams.
    */
   def listStreams(aws: ListStreamsRequest): Future[Either[AmazonServiceException, ListStreamsResult]] =
-    pipeline(request(aws)).map(response[ListStreamsResult])
+    pipeline(request(aws)).flatMap(response[ListStreamsResult])
 
   def sendListStreams(aws: ListStreamsRequest): Future[ListStreamsResult] = fold(listStreams(aws))
 
@@ -143,7 +143,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Returns 200 with empty body on success.
    */
   def mergeShards(aws: MergeShardsRequest): Future[Either[AmazonServiceException, Unit]] =
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
 
   def sendMergeShards(aws: MergeShardsRequest): Future[Unit] = fold(mergeShards(aws))
 
@@ -151,7 +151,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Add a record to a stream.
    */
   def putRecord(aws: PutRecordRequest): Future[Either[AmazonServiceException, PutRecordResult]] =
-    pipeline(request(aws)).map(response[PutRecordResult])
+    pipeline(request(aws)).flatMap(response[PutRecordResult])
 
   def sendPutRecord(aws: PutRecordRequest): Future[PutRecordResult] = fold(putRecord(aws))
 
@@ -161,7 +161,7 @@ class KinesisClient(val props: KinesisClientProps) extends AkkaAWSClient(props) 
    * Returns 200 with empty body on success.
    */
   def splitShard(aws: SplitShardRequest): Future[Either[AmazonServiceException, Unit]] =
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
 
   def sendSplitShard(aws: SplitShardRequest): Future[Unit] = fold(splitShard(aws))
 

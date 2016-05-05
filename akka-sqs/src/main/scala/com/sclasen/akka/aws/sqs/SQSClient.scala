@@ -108,84 +108,84 @@ class SQSClient(val props: SQSClientProps) extends AkkaAWSClient(props) {
     fold(addPermission(aws))
 
   def addPermission(aws: AddPermissionRequest): Future[Either[AmazonServiceException, Unit]] =
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
 
   def sendChangeMessageVisibilityBatch(aws: ChangeMessageVisibilityBatchRequest): Future[ChangeMessageVisibilityBatchResult] =
     fold(changeMessageVisibilityBatch(aws))
 
   def changeMessageVisibilityBatch(aws: ChangeMessageVisibilityBatchRequest): Future[Either[AmazonServiceException, ChangeMessageVisibilityBatchResult]] =
-    pipeline(request(aws)).map(response[ChangeMessageVisibilityBatchResult])
+    pipeline(request(aws)).flatMap(response[ChangeMessageVisibilityBatchResult])
 
   def sendCreateQueue(aws: CreateQueueRequest): Future[CreateQueueResult] =
     fold(createQueue(aws))
 
   def createQueue(aws: CreateQueueRequest): Future[Either[AmazonServiceException, CreateQueueResult]] =
-    pipeline(request(aws)).map(response[CreateQueueResult])
+    pipeline(request(aws)).flatMap(response[CreateQueueResult])
 
   def sendDeleteMessageBatch(aws: DeleteMessageBatchRequest): Future[DeleteMessageBatchResult] =
     fold(deleteMessageBatch(aws))
 
   def deleteMessageBatch(aws: DeleteMessageBatchRequest): Future[Either[AmazonServiceException, DeleteMessageBatchResult]] =
-    pipeline(request(aws)).map(response[DeleteMessageBatchResult])
+    pipeline(request(aws)).flatMap(response[DeleteMessageBatchResult])
 
   def sendDeleteMessage(aws: DeleteMessageRequest): Future[Unit] =
     fold(deleteMessage(aws))
 
   def deleteMessage(aws: DeleteMessageRequest): Future[Either[AmazonServiceException, Unit]] =
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
 
   def sendDeleteQueue(aws: DeleteQueueRequest): Future[Unit] =
     fold(deleteQueue(aws))
 
   def deleteQueue(aws: DeleteQueueRequest): Future[Either[AmazonServiceException, Unit]] =
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
 
   def sendGetQueueAttributes(aws: GetQueueAttributesRequest): Future[GetQueueAttributesResult] =
     fold(getQueueAttributes(aws))
 
   def getQueueAttributes(aws: GetQueueAttributesRequest): Future[Either[AmazonServiceException, GetQueueAttributesResult]] =
-    pipeline(request(aws)).map(response[GetQueueAttributesResult])
+    pipeline(request(aws)).flatMap(response[GetQueueAttributesResult])
 
   def sendGetQueueUrl(aws: GetQueueUrlRequest): Future[GetQueueUrlResult] =
     fold(getQueueUrl(aws))
 
   def getQueueUrl(aws: GetQueueUrlRequest): Future[Either[AmazonServiceException, GetQueueUrlResult]] =
-    pipeline(request(aws)).map(response[GetQueueUrlResult])
+    pipeline(request(aws)).flatMap(response[GetQueueUrlResult])
 
   def sendListDeadLetterSourceQueues(aws: ListDeadLetterSourceQueuesRequest): Future[ListDeadLetterSourceQueuesResult] =
     fold(listDeadLetterSourceQueues(aws))
 
   def listDeadLetterSourceQueues(aws: ListDeadLetterSourceQueuesRequest): Future[Either[AmazonServiceException, ListDeadLetterSourceQueuesResult]] =
-    pipeline(request(aws)).map(response[ListDeadLetterSourceQueuesResult])
+    pipeline(request(aws)).flatMap(response[ListDeadLetterSourceQueuesResult])
 
   def sendListQueues(aws: ListQueuesRequest): Future[ListQueuesResult] =
     fold(listQueues(aws))
 
   def listQueues(aws: ListQueuesRequest): Future[Either[AmazonServiceException, ListQueuesResult]] =
-    pipeline(request(aws)).map(response[ListQueuesResult])
+    pipeline(request(aws)).flatMap(response[ListQueuesResult])
 
   def sendReceiveMessage(aws: ReceiveMessageRequest): Future[ReceiveMessageResult] =
     fold(receiveMessage(aws))
 
   def receiveMessage(aws: ReceiveMessageRequest): Future[Either[AmazonServiceException, ReceiveMessageResult]] =
-    pipeline(request(aws)).map(response[ReceiveMessageResult])
+    pipeline(request(aws)).flatMap(response[ReceiveMessageResult])
 
   def sendSendMessageBatch(aws: SendMessageBatchRequest): Future[SendMessageBatchResult] =
     fold(sendMessageBatch(aws))
 
   def sendMessageBatch(aws: SendMessageBatchRequest): Future[Either[AmazonServiceException, SendMessageBatchResult]] =
-    pipeline(request(aws)).map(response[SendMessageBatchResult])
+    pipeline(request(aws)).flatMap(response[SendMessageBatchResult])
 
   def sendSendMessage(aws: SendMessageRequest): Future[SendMessageResult] =
     fold(sendMessage(aws))
 
   def sendMessage(aws: SendMessageRequest): Future[Either[AmazonServiceException, SendMessageResult]] =
-    pipeline(request(aws)).map(response[SendMessageResult])
+    pipeline(request(aws)).flatMap(response[SendMessageResult])
 
   def sendSetQueueAttributes(aws: SetQueueAttributesRequest): Future[Unit] =
     fold(setQueueAttributes(aws))
 
   def setQueueAttributes(aws: SetQueueAttributesRequest): Future[Either[AmazonServiceException, Unit]] =
-    pipeline(request(aws)).map(response[Unit])
+    pipeline(request(aws)).flatMap(response[Unit])
 
 }
