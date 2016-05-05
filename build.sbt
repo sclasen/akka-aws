@@ -1,4 +1,4 @@
-name := "spray-aws"
+name := "akka-aws"
 
 organization := "com.sclasen"
 
@@ -34,36 +34,36 @@ libraryDependencies ++= deps
 lazy val root = project
   .in(file("."))
   .settings(libraryDependencies ++= deps)
-  .aggregate(spray_aws, spray_dynamodb, spray_kinesis, spray_sqs, spray_route53, spray_s3)
+  .aggregate(akka_aws, akka_dynamodb, akka_kinesis, akka_sqs, akka_route53, akka_s3)
 
-lazy val spray_aws = project
-  .in(file("spray-aws"))
+lazy val akka_aws = project
+  .in(file("akka-aws"))
   .settings(libraryDependencies ++= deps)
 
-lazy val spray_dynamodb = project
-  .in(file("spray-dynamodb"))
+lazy val akka_dynamodb = project
+  .in(file("akka-dynamodb"))
   .settings(libraryDependencies ++= deps)
-  .dependsOn(spray_aws)
+  .dependsOn(akka_aws)
 
-lazy val spray_sqs = project
-  .in(file("spray-sqs"))
+lazy val akka_sqs = project
+  .in(file("akka-sqs"))
   .settings(libraryDependencies ++= deps)
-  .dependsOn(spray_aws)
+  .dependsOn(akka_aws)
 
-lazy val spray_kinesis = project
-  .in(file("spray-kinesis"))
+lazy val akka_kinesis = project
+  .in(file("akka-kinesis"))
   .settings(libraryDependencies ++= deps)
-  .dependsOn(spray_aws)
+  .dependsOn(akka_aws)
 
-lazy val spray_route53 = project
-  .in(file("spray-route53"))
+lazy val akka_route53 = project
+  .in(file("akka-route53"))
   .settings(libraryDependencies ++= deps)
-  .dependsOn(spray_aws)
+  .dependsOn(akka_aws)
 
-lazy val spray_s3 = project
-  .in(file("spray-s3"))
+lazy val akka_s3 = project
+  .in(file("akka-s3"))
   .settings(libraryDependencies ++= deps)
-  .dependsOn(spray_aws)
+  .dependsOn(akka_aws)
 
 // If we want on maven central, we need to be in maven style.
 publishMavenStyle := true
@@ -86,7 +86,7 @@ pomIncludeRepository := {
 
 // Maven central wants some extra metadata to keep things 'clean'.
 pomExtra :=
-  <url>http://github.com/sclasen/spray-aws</url>
+  <url>http://github.com/sclasen/akka-aws</url>
     <licenses>
       <license>
         <name>The Apache Software License, Version 2.0</name>
@@ -95,8 +95,8 @@ pomExtra :=
       </license>
     </licenses>
     <scm>
-      <url>git@github.com:sclasen/spray-aws.git</url>
-      <connection>scm:git:git@github.com:sclasen/spray-aws.git</connection>
+      <url>git@github.com:sclasen/akka-aws.git</url>
+      <connection>scm:git:git@github.com:sclasen/akka-aws.git</connection>
     </scm>
     <developers>
       <developer>
