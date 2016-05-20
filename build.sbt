@@ -1,12 +1,11 @@
 name := "akka-aws"
 
-organization := "com.sclasen"
-
-version := "0.3.7-SNAPSHOT"
-
-scalaVersion := "2.11.2"
-
-crossScalaVersions := Seq("2.10.4", "2.11.2")
+lazy val commonSettings = Seq(
+ organization := "com.sclasen",
+ version := "0.3.7-SNAPSHOT",
+ scalaVersion := "2.11.2",
+ crossScalaVersions := Seq("2.10.4", "2.11.2")
+)
 
 scalacOptions ++= Seq("-feature", "-deprecation", "-language:implicitConversions", "-language:postfixOps")
 
@@ -33,35 +32,42 @@ libraryDependencies ++= deps
 
 lazy val root = project
   .in(file("."))
+  .settings(commonSettings: _*)
   .settings(libraryDependencies ++= deps)
   .aggregate(akka_aws, akka_dynamodb, akka_kinesis, akka_sqs, akka_route53, akka_s3)
 
 lazy val akka_aws = project
   .in(file("akka-aws"))
+  .settings(commonSettings: _*)
   .settings(libraryDependencies ++= deps)
 
 lazy val akka_dynamodb = project
   .in(file("akka-dynamodb"))
+  .settings(commonSettings: _*)
   .settings(libraryDependencies ++= deps)
   .dependsOn(akka_aws)
 
 lazy val akka_sqs = project
   .in(file("akka-sqs"))
+  .settings(commonSettings: _*)
   .settings(libraryDependencies ++= deps)
   .dependsOn(akka_aws)
 
 lazy val akka_kinesis = project
   .in(file("akka-kinesis"))
+  .settings(commonSettings: _*)
   .settings(libraryDependencies ++= deps)
   .dependsOn(akka_aws)
 
 lazy val akka_route53 = project
   .in(file("akka-route53"))
+  .settings(commonSettings: _*)
   .settings(libraryDependencies ++= deps)
   .dependsOn(akka_aws)
 
 lazy val akka_s3 = project
   .in(file("akka-s3"))
+  .settings(commonSettings: _*)
   .settings(libraryDependencies ++= deps)
   .dependsOn(akka_aws)
 
@@ -71,7 +77,7 @@ publishMavenStyle := true
 publishArtifact in Test := false
 
 // The Nexus repo we're publishing to.
-publishTo <<= version {
+publishTo in ThisBuild <<= version {
   (v: String) =>
     val nexus = "https://oss.sonatype.org/"
     if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
