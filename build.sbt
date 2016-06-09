@@ -2,7 +2,7 @@ name := "akka-aws"
 
 lazy val commonSettings = Seq(
  organization := "com.sclasen",
- version := "0.3.7-SNAPSHOT",
+ version := "0.3.8-SNAPSHOT",
  scalaVersion := "2.11.2",
  crossScalaVersions := Seq("2.10.4", "2.11.2")
 )
@@ -17,7 +17,7 @@ resolvers ++= Seq(
 
 def deps = Seq(aws, akka, scalaTest, akka_testkit, akka_http, akka_http_core, akka_http_spray)
 
-val akkaVersion = "2.3.5"
+val akkaVersion = "2.4.7"
 val akkaHttpVersion = "1.0"
 
 val aws = "com.amazonaws" % "aws-java-sdk" % "1.8.9.1" % "compile"
