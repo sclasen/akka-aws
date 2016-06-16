@@ -1,26 +1,23 @@
 package com.sclasen.akka.aws
 
 import java.io.ByteArrayInputStream
-import java.net.{ URI, URLEncoder }
-import java.util.{ List => JList }
+import java.net.{URI, URLEncoder}
 
-import scala.concurrent.Await
-
-import akka.actor.{ ActorSystem, _ }
+import akka.actor.{ActorSystem, _}
 import akka.event.LoggingAdapter
-import akka.io.IO
-import akka.util.{ Timeout, ByteString }
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.RawHeader
-import akka.http.scaladsl.client.RequestBuilding._
 import akka.http.scaladsl.Http
-import akka.http.ClientConnectionSettings
+import akka.http.scaladsl.client.RequestBuilding._
+import akka.http.scaladsl.model.MediaType.NotCompressible
+import akka.http.scaladsl.model.headers.RawHeader
+import akka.http.scaladsl.model.{MediaType, _}
+import akka.http.scaladsl.settings.ClientConnectionSettings
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl._
+import akka.util.{ByteString, Timeout}
 import com.amazonaws.auth._
-import com.amazonaws.http.{ HttpMethodName, HttpResponseHandler, HttpResponse => AWSHttpResponse }
+import com.amazonaws.http.{HttpMethodName, HttpResponseHandler, HttpResponse => AWSHttpResponse}
 import com.amazonaws.transform.Marshaller
-import com.amazonaws.{ AmazonServiceException, AmazonWebServiceResponse, DefaultRequest, Request }
+import com.amazonaws.{AmazonServiceException, AmazonWebServiceResponse, DefaultRequest, Request}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
@@ -66,7 +63,7 @@ abstract class AkkaAWSClient(props: AkkaAWSClientProps) {
 
   def pipeline(request: HttpRequest)(implicit system: ActorSystem, materializer: ActorMaterializer): Future[HttpResponse] = {
     val connectionFlow: Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = if (ssl) {
-      Http().outgoingConnectionTls(endpointUri.getHost, port = port)
+      Http().outgoingConnectionHttps(endpointUri.getHost, port = port)
     } else {
       Http().outgoingConnection(endpointUri.getHost, port = port)
     }
@@ -95,7 +92,7 @@ abstract class AkkaAWSClient(props: AkkaAWSClientProps) {
     }).mkString("&")
 
   def formData[T](awsReq: Request[T]) =
-    HttpEntity(MediaTypes.`application/x-www-form-urlencoded`, encodeQuery(awsReq))
+    HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`, HttpCharsets.`ISO-8859-1`), encodeQuery(awsReq))
 
   def request[T](t: T)(implicit marshaller: Marshaller[Request[T], T]): HttpRequest = {
     import HttpProtocols._
@@ -112,8 +109,14 @@ abstract class AkkaAWSClient(props: AkkaAWSClientProps) {
     if (path == "" || path == null) path = "/"
     val request = if (awsReq.getContent != null) {
       val body: Array[Byte] = Stream.continually(awsReq.getContent.read).takeWhile(-1 != _).map(_.toByte).toArray
-      val mediaType = MediaType.custom(contentType.getOrElse(defaultContentType), MediaType.Encoding.Open)
-      HttpRequest(awsReq.getHttpMethod, Uri(path = Uri.Path(path)), headers(awsReq), HttpEntity(mediaType, body), `HTTP/1.1`)
+      val Array(main, secondary) = contentType.getOrElse(defaultContentType).split("/")
+      val mediaType = MediaType.customBinary(main, secondary, NotCompressible)
+      HttpRequest(
+        awsReq.getHttpMethod,
+        Uri(path = Uri.Path(path)),
+        headers(awsReq),
+        HttpEntity(ContentType(mediaType), body),
+        `HTTP/1.1`)
     } else {
       val method: HttpMethod = awsReq.getHttpMethod
       method match {
@@ -129,7 +132,7 @@ abstract class AkkaAWSClient(props: AkkaAWSClientProps) {
             case x :: xs => Put(path, formData(awsReq)) ~> addHeaders(x, xs:_*)
           }
         case method =>
-          val uri = Uri(path = Uri.Path(path), query = Uri.Query.Raw(encodeQuery(awsReq)))
+          val uri = Uri(path = Uri.Path(path)).withRawQueryString(encodeQuery(awsReq))
           HttpRequest(method, uri, headers(awsReq))
       }
     }
@@ -143,8 +146,6 @@ abstract class AkkaAWSClient(props: AkkaAWSClientProps) {
              actorSystem: ActorSystem,
              materializer: ActorMaterializer
   ): Response[T] = {
-    import scala.util.Try
-    import scala.concurrent.Promise
 
     val req = new DefaultRequest[T](props.service)
     val awsResp = new AWSHttpResponse(req, null)
