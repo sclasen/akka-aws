@@ -18,13 +18,12 @@ resolvers ++= Seq(
 def deps = Seq(aws, akka, scalaTest, akka_testkit, akka_http, akka_http_core, akka_http_spray)
 
 val akkaVersion = "2.4.7"
-val akkaHttpVersion = "1.0"
 
 val aws = "com.amazonaws" % "aws-java-sdk" % "1.8.9.1" % "compile"
 val akka = "com.typesafe.akka" %% "akka-actor" % akkaVersion % "compile"
-val akka_http = "com.typesafe.akka" %% "akka-http-experimental" % akkaHttpVersion
-val akka_http_core = "com.typesafe.akka" %% "akka-http-core-experimental" % akkaHttpVersion
-val akka_http_spray = "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaHttpVersion
+val akka_http = "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion
+val akka_http_core = "com.typesafe.akka" %% "akka-http-core" % akkaVersion
+val akka_http_spray = "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion
 val akka_testkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
 val scalaTest   = "org.scalatest"     %% "scalatest"   % "2.2.1" % "test"
 
