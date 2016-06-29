@@ -2,7 +2,7 @@ name := "akka-aws"
 
 lazy val commonSettings = Seq(
  organization := "com.sclasen",
- version := "0.3.8-SNAPSHOT",
+ version := "0.3.9-SNAPSHOT",
  scalaVersion := "2.11.2",
  crossScalaVersions := Seq("2.10.4", "2.11.2")
 )
